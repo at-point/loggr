@@ -7,7 +7,7 @@ module Loggr
     # Default backend which is backed Rubys Stdlib Logger.
     #
     #
-    class BaseAdapter < Abstract
+    class BaseAdapter < AbstractAdapter
       
       # 
       #

@@ -6,7 +6,7 @@ module Loggr
     #
     # Ensure to implement `#logger`.
     # 
-    class Abstract
+    class AbstractAdapter
       
       # Implement which creates a new instance of a logger.
       def logger(name, options = {})

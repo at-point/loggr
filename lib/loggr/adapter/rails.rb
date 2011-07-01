@@ -20,7 +20,7 @@ module Loggr
     #
     #    config.logger = Loggr.logger('rails', :backend => Loggr::Adapter::Buffered)
     #
-    class RailsAdapter < Abstract
+    class RailsAdapter < AbstractAdapter
       
       # The rails backend ignores all options as it just returns
       # always returns `Rails.logger` :)
