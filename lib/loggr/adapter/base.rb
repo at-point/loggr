@@ -23,7 +23,7 @@ module Loggr
         # creating a new logger...
         #
         def build_new_logger(name, options = {})
-          Logger.new(options[:to] || "#{name.to_s.gsub(/[\s\/]*/, '_')}.log").tap do |logger|
+          Logger.new(options[:to] || "#{name.to_s.gsub(/[\s\/]+/, '_')}.log").tap do |logger|
             logger.level = options[:level] || Logger::DEBUG
             logger.progname = name
           end        
