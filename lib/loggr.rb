@@ -21,8 +21,6 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
 
-require 'loggr/backends'
-
 # This is basically a factory facade to create new Logger instances
 # which behave all like 
 #

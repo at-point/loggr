@@ -41,6 +41,15 @@ module Loggr
       @adapter = get_adapter(new_adapter)
     end
     
+    # Do stuff tempoarly with supplied adapter instead of current adapter.
+    def with_adapter(new_adapter, &block)
+      old_adapter, use_adapter = self.adapter, get_adapter(new_adapter)
+      self.adapter = use_adapter
+      yield if block_given?
+    ensure
+      self.adapter = old_adapter
+    end
+    
     # Get a new logger instance for supplied named logger or class name.
     #
     # All adapters must ensure that they provide the same API for creating
@@ -53,7 +62,8 @@ module Loggr
     # If a adapter does not support setting a specific option, just
     # ignore it :)
     def logger(name, options = {}, &block)
-      self.adapter.logger(name, options).tap do |logger|
+      use_adapter = options.key?(:adapter) ? get_adapter(options.delete(:adapter)) : self.adapter
+      use_adapter.logger(name, options).tap do |logger|
         yield(logger) if block_given?
       end
     end
@@ -79,10 +89,34 @@ module Loggr
     end
     
     protected
-      # Try
+    
+      # Try to get adapter class from Symbol, String or use Object as-is.
       #
       def get_adapter(adp)
-      
+        adp = Loggr::Adapter::SLF4J if adp == :slf4j # okay, this is only because we can't camelize it :)
+        
+        # Code adapter from ActiveSupport::Inflector#camelize
+        # https://github.com/rails/rails/blob/v3.0.9/activesupport/lib/active_support/inflector/methods.rb#L30
+        adp = adp.to_s.gsub(/\/(.?)/) { "::#{$1.upcase}" }.gsub(/(?:^|_)(.)/) { $1.upcase } if adp.is_a?(Symbol)
+        
+        clazz = adp
+        
+        if adp.respond_to?(:to_str)
+          const = begin Loggr::Adapter.const_get(adp.to_s) rescue nil end
+          unless const
+            # code adapter from ActiveSupport::Inflector#constantize
+            # https://github.com/rails/rails/blob/v3.0.9/activesupport/lib/active_support/inflector/methods.rb#L107
+            names = adp.to_s.split('::')
+            names.shift if names.empty? || names.first.empty?
+            
+            const = ::Object
+            names.each { |n| const = const.const_get(n) }
+          end
+          clazz = const          
+        end
+        
+        raise "#{clazz}: an adapter must implement #logger and #mdc" unless clazz.respond_to?(:logger) && clazz.respond_to?(:mdc)
+        clazz
       end
   end
 end
