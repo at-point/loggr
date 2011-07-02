@@ -40,16 +40,7 @@ module Loggr
     def adapter=(new_adapter)
       @adapter = get_adapter(new_adapter)
     end
-    
-    # Do stuff tempoarly with supplied adapter instead of current adapter.
-    def with_adapter(new_adapter, &block)
-      old_adapter, use_adapter = self.adapter, get_adapter(new_adapter)
-      self.adapter = use_adapter
-      yield if block_given?
-    ensure
-      self.adapter = old_adapter
-    end
-    
+        
     # Get a new logger instance for supplied named logger or class name.
     #
     # All adapters must ensure that they provide the same API for creating
