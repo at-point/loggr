@@ -24,6 +24,7 @@
 module Loggr
   autoload :Adapter,  'loggr/adapter'  
   autoload :Severity, 'loggr/severity'
+  autoload :Lint,     'loggr/lint'
   
   autoload :VERSION, 'loggr/version'
   
