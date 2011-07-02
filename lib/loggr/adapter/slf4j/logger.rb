@@ -1,3 +1,5 @@
+require 'loggr/severity'
+
 begin
   Java::OrgSlf4j::LoggerFactory
 rescue
@@ -10,6 +12,9 @@ module Loggr
     # A logger which is backed by SLF4J, thus only useable in a JRuby environment.
     #
     class SLF4JLogger
+      
+      # Get severities
+      include Loggr::Severity
       
       # Basically has *no* impact, because is handled by SLF4J
       attr_accessor :level
@@ -29,8 +34,8 @@ module Loggr
         @java_logger = Java::OrgSlf4j::LoggerFactory.getLogger(name.to_s)
         @java_marker = Java::OrgSlf4j::MarkerFactory.getMarker(marker)
         
-        # seriously, this is handled by slf4j
-        @level = Loggr::UNKNOWN
+        # seriously, this is handled by slf4j and pretty dynamic
+        @level = SLF4JLogger::UNKNOWN
         @auto_flushing = true
       end
       

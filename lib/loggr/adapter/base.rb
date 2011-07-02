@@ -13,8 +13,7 @@ module Loggr
       #
       def logger(name, options = {})
         @loggers ||= {}
-        @loggers[name] = build_new_logger(name, options) unless @loggers.key?(name)
-        @loggers[name]
+        @loggers[name] ||= build_new_logger(name, options)
       end
       
       protected

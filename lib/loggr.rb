@@ -21,16 +21,15 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
 
-# This is basically a factory facade to create new Logger instances
-# which behave all like 
-#
 module Loggr
   autoload :Adapter,  'loggr/adapter'  
   autoload :Severity, 'loggr/severity'
-
-  # Ensure we've got the Log Levels covered
-  include Loggr::Severity
   
-  # Ensure we get all those factory methods directly here
-  extend Loggr::Adapter
+  autoload :VERSION, 'loggr/version'
+  
+  # Ensure we've got the Log Levels covered
+  include Loggr::Severity  
 end
+
+# Autoloading the factory into the root.
+autoload :LoggerFactory, 'loggr/factory'
