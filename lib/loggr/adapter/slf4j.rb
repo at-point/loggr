@@ -9,7 +9,7 @@ module Loggr
     class SLF4JAdapter < BaseAdapter      
       # Use the SLF4J backed real MDC.
       def mdc
-        @mdc ||= Logger::Adapter::SLF4JMdc.new
+        @mdc ||= Loggr::Adapter::SLF4JMdc.new
       end
       
       protected
