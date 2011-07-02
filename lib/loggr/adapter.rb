@@ -14,7 +14,7 @@ module Loggr
   module Adapter
     
     # An abstract base class, which provides a simple MDC implementation
-    autoload :Abstract, 'loggr/adapter/abstract'
+    autoload :AbstractAdapter, 'loggr/adapter/abstract'
     
     # Adapter for Ruby Stdlib Logger
     autoload :Base,     'loggr/adapter/base'
