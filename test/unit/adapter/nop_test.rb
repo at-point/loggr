@@ -14,13 +14,11 @@ class Loggr::Adapter::NOPTest < MiniTest::Unit::TestCase
   end
   
   def test_nop_should_not_write_any_files
-    tempfile = Tempfile.new('nop-logger')
-    logger = @adapter.logger('nop', :to => tempfile.path)
-    logger.error "oops, i failed?"
-    logger.close
-    tempfile.close
-    assert File.read(tempfile.path).length == 0, "Nop logger should not log anything at all, wtf!"
-  ensure
-    tempfile.unlink  
+    with_tempfile do |file|
+      logger = @adapter.logger('nop', :to => file)
+      logger.error "oops, i failed?"
+      logger.close
+      assert File.read(file).length == 0, "Nop logger should not log anything at all, wtf!"
+    end
   end
 end
