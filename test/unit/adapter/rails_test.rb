@@ -29,7 +29,7 @@ class Loggr::Adapter::RailsTest < MiniTest::Unit::TestCase
   end
   
   def test_should_default_to_rails_adapter
-    clazz = Class.new(Object) do
+    clazz = Class.new do
       extend Loggr::Adapter
     end
     
