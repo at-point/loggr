@@ -21,11 +21,11 @@ class Loggr::Adapter::RailsTest < MiniTest::Unit::TestCase
   include Loggr::Lint::Tests
   
   def test_rails_should_be_a_rails_adapter
-    assert Loggr::Adapter::Rails.is_a?(Loggr::Adapter::RailsAdapter)
+    assert_kind_of Loggr::Adapter::RailsAdapter, Loggr::Adapter::Rails
   end
   
   def test_should_use_same_logger_as_rails
-    assert_equal Loggr::Adapter::Rails.logger('log'), ::Rails.logger
+    assert_equal ::Rails.logger, Loggr::Adapter::Rails.logger('log')
   end
   
   def test_should_default_to_rails_adapter
@@ -33,6 +33,6 @@ class Loggr::Adapter::RailsTest < MiniTest::Unit::TestCase
       extend Loggr::Adapter
     end
     
-    assert_equal clazz.adapter, Loggr::Adapter::Rails
+    assert_equal Loggr::Adapter::Rails, clazz.adapter
   end
 end

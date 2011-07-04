@@ -13,6 +13,7 @@ class Loggr::Adapter::SLF4JTest < MiniTest::Unit::TestCase
 
   def test_lint
     skip_unless_jruby
+    pass "include Loggr::Lint::Tests"
   end
     
   include(Loggr::Lint::Tests) if jruby?

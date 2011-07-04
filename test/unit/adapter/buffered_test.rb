@@ -10,6 +10,10 @@ class Loggr::Adapter::BufferedTest < MiniTest::Unit::TestCase
   include Loggr::Lint::Tests
   
   def test_buffered_should_be_a_buffered_adapter
-    assert Loggr::Adapter::Buffered.is_a?(Loggr::Adapter::BufferedAdapter)
+    assert_kind_of Loggr::Adapter::BufferedAdapter, Loggr::Adapter::Buffered
+  end
+  
+  def test_logger_instance_should_be_a_buffered_logger
+    
   end
 end

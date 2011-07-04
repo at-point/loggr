@@ -10,7 +10,7 @@ class Loggr::Adapter::NOPTest < MiniTest::Unit::TestCase
   include Loggr::Lint::Tests
   
   def test_nop_should_be_a_nop_adapter
-    assert Loggr::Adapter::NOP.is_a?(Loggr::Adapter::NOPAdapter)
+    assert_kind_of Loggr::Adapter::NOPAdapter, Loggr::Adapter::NOP
   end
   
   def test_nop_should_not_write_any_files
