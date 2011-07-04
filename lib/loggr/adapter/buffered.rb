@@ -14,8 +14,8 @@ module Loggr
         #
         def build_new_logger(name, options = {})
           ActiveSupport::BufferedLogger.new(options[:to] || "#{name.to_s.gsub(/[\s\/]+/, '_')}.log").tap do |logger|
-            logger.level = options[:level] || ActiveSupport::BufferedLogger::DEBUG
-          end        
+            logger.level = options[:level] || ActiveSupport::BufferedLogger::INFO
+          end
         end
     end
     
