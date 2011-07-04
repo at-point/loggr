@@ -1,5 +1,6 @@
 require 'test_helper'
 require 'loggr/lint'
+require 'loggr/adapter'
 require 'loggr/adapter/rails'
 
 # mock Rails
@@ -22,5 +23,13 @@ class Loggr::Adapter::RailsTest < MiniTest::Unit::TestCase
   
   def test_should_use_same_logger_as_rails
     assert_equal Loggr::Adapter::Rails.logger('log'), ::Rails.logger
+  end
+  
+  def test_should_default_to_rails_adapter
+    class TestFactory
+      extend Loggr::Adapter
+    end
+    
+    assert_equal TestFactory.adapter, Loggr::Adapter::RailsAdapter
   end
 end

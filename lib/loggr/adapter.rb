@@ -30,9 +30,8 @@ module Loggr
         
     # Get the backend, if no backend is defined uses the default backend.
     #
-    # FIXME: set default backend based on environment, i.e. Rails
     def adapter
-      @adapter ||= Loggr::Adapter::Base
+      @adapter ||= Object.const_defined?(:Rails) ? Loggr::Adapter::Rails : Loggr::Adapter::Base
     end
     
     # Set a new adapter, either as string, class or whatever :)

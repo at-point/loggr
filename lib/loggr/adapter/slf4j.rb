@@ -3,7 +3,7 @@ require 'loggr/slf4j'
 module Loggr
   module Adapter
     
-    # 
+    # Provides an adapter for the SLF4J Logger.
     #
     class SLF4JAdapter < BaseAdapter      
       # Use the SLF4J backed real MDC.
