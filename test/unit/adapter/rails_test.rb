@@ -9,7 +9,7 @@ module Rails
   end
 end
 
-class Loggr::Adapter::RailsTest < Test::Unit::TestCase
+class Loggr::Adapter::RailsTest < MiniTest::Unit::TestCase
   def setup
     @adapter = Loggr::Adapter::RailsAdapter.new
   end

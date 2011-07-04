@@ -2,7 +2,7 @@ require 'test_helper'
 require 'loggr/lint'
 require 'loggr/adapter/base'
 
-class Loggr::Adapter::BaseTest < Test::Unit::TestCase
+class Loggr::Adapter::BaseTest < MiniTest::Unit::TestCase
   def setup
     @adapter = Loggr::Adapter::BaseAdapter.new
   end

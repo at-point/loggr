@@ -2,7 +2,7 @@ require 'test_helper'
 require 'loggr/lint'
 require 'loggr/adapter/nop'
 
-class Loggr::Adapter::NOPTest < Test::Unit::TestCase
+class Loggr::Adapter::NOPTest < MiniTest::Unit::TestCase
   def setup
     @adapter = Loggr::Adapter::NOPAdapter.new
   end
