@@ -1,9 +1,3 @@
-begin
-  Java::OrgSlf4j::MDC
-rescue LoadError
-  require File.join(File.dirname(__FILE__), 'slf4j-api-1.6.1.jar')
-end
-
 module Loggr
   module SLF4J
     

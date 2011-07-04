@@ -1,11 +1,5 @@
 require 'loggr/severity'
 
-begin
-  Java::OrgSlf4j::LoggerFactory
-rescue
-  require File.join(File.dirname(__FILE__), 'slf4j-api-1.6.1.jar')
-end
-
 module Loggr
   module SLF4J
     
@@ -43,7 +37,7 @@ module Loggr
       %w{trace debug info warn error}.each do |severity|
         class_eval <<-EOT, __FILE__, __LINE__ + 1
           def #{severity}(message = nil, progname = nil, &block)                              # def debug(message = nil, progname = nil, &block)
-            if java_logger.is_#{severity}_enabled(marker)                                     #   if java_logger.is_debug_enabled(marker)
+            if java_logger.is_#{severity}_enabled(java_marker)                                #   if java_logger.is_debug_enabled(java_marker)
               java_logger.#{severity}(java_marker, build_message(message, progname, &block))  #     java_logger.debug(java_marker, build_message(message, progname, &block))
             end                                                                               #   end
           end                                                                                 # end

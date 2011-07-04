@@ -1,4 +1,5 @@
 require 'loggr/slf4j'
+require 'loggr/adapter/base'
 
 module Loggr
   module Adapter
