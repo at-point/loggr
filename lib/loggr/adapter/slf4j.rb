@@ -1,5 +1,4 @@
-require 'loggr/adapter/slf4j/logger'
-require 'loggr/adapter/slf4j/mdc'
+require 'loggr/slf4j'
 
 module Loggr
   module Adapter
@@ -9,13 +8,13 @@ module Loggr
     class SLF4JAdapter < BaseAdapter      
       # Use the SLF4J backed real MDC.
       def mdc
-        @mdc ||= Loggr::Adapter::SLF4JMdc.new
+        @mdc ||= Loggr::SLF4J::MDC
       end
       
       protected
         # Create a new SLF4JLogger instance.
         def build_new_logger(name, options = {})
-          Loggr::Adapter::SLF4JLogger.new(name, options)
+          Loggr::SLF4J::Logger.new(name, options)
         end            
     end
     

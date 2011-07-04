@@ -6,7 +6,8 @@ instead of just `Logger.new('out.log')` or `Rails.logger`?** Deploying the same 
 to different environments, with different logging requirements, might make such a step
 necessary.
 
-The factory has basically been designed to take advantage of features in SLF4J (JRuby only),
+It also provides a wrapper for SLF4J - which might come in very handy when working with
+JRuby :) The factory has basically been designed to take advantage of features in SLF4J (JRuby only),
 yet have a consistent API to work in all environments (non-JRuby, development etc.).
 
 An example, application runs in development on MRI and production in a Jetty container
@@ -96,6 +97,13 @@ access to an MDC, so the MDC can be used in code no matter the adapter, a sample
     
 When using SLF4J all statements would now be annotated with the IP who has made the
 request.
+
+Using SLF4J Logger directly
+---------------------------
+
+To directly create a SLF4J Logger, which provides the same API as Stdlib Logger or BufferedLogger use:
+
+    @logger = Loggr::SLF4J::Logger.new 'my.package.App', :marker => "QUEUE"
 
 Custom adapters
 ---------------

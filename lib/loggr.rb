@@ -26,6 +26,8 @@ module Loggr
   autoload :Severity, 'loggr/severity'
   autoload :Lint,     'loggr/lint'
   
+  autoload :SLF4J,    'loggr/slf4j'
+  
   autoload :VERSION, 'loggr/version'
   
   # Ensure we've got the Log Levels covered

@@ -7,11 +7,11 @@ rescue
 end
 
 module Loggr
-  module Adapter
+  module SLF4J
     
     # A logger which is backed by SLF4J, thus only useable in a JRuby environment.
     #
-    class SLF4JLogger
+    class Logger
       
       # Get severities
       include Loggr::Severity
@@ -35,22 +35,22 @@ module Loggr
         @java_marker = Java::OrgSlf4j::MarkerFactory.getMarker(marker)
         
         # seriously, this is handled by slf4j and pretty dynamic
-        @level = SLF4JLogger::UNKNOWN
+        @level = Logger::UNKNOWN
         @auto_flushing = true
       end
       
       # Create the logger methods via meta programming, sweet.
       %w{trace debug info warn error}.each do |severity|
         class_eval <<-EOT, __FILE__, __LINE__ + 1
-          def #{severity}(message = nil, progname = nil, &block)                    # def debug(message = nil, progname = nil, &block)
-            if logger.is_#{severity}_enabled(marker)                                #   if logger.is_debug_enabled(marker)
-              logger.#{severity}(marker, build_message(message, progname, &block))  #     logger.debug(marker, build_message(message, progname, &block))
-            end                                                                     #   end
-          end                                                                       # end
+          def #{severity}(message = nil, progname = nil, &block)                              # def debug(message = nil, progname = nil, &block)
+            if java_logger.is_#{severity}_enabled(marker)                                     #   if java_logger.is_debug_enabled(marker)
+              java_logger.#{severity}(java_marker, build_message(message, progname, &block))  #     java_logger.debug(java_marker, build_message(message, progname, &block))
+            end                                                                               #   end
+          end                                                                                 # end
           
-          def #{severity}?                                                          # def debug?
-            !!logger.is_#{severity}_enabled(marker)                                 #   !!logger.is_debug_enabled(marker)
-          end                                                                       # end
+          def #{severity}?                                                                    # def debug?
+            !!java_logger.is_#{severity}_enabled(java_marker)                                 #   !!java_logger.is_debug_enabled(java_marker)
+          end                                                                                 # end
         EOT
       end
 

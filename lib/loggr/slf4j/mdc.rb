@@ -5,11 +5,11 @@ rescue LoadError
 end
 
 module Loggr
-  module Adapter
+  module SLF4J
     
     # Wrapper around the SLF4J MDC.
     #
-    class SLF4JMdc
+    class MDCWrapper
       
       # Access the original SLF4J MDC
       attr_accessor :java_mdc
@@ -34,5 +34,8 @@ module Loggr
       # Convert MDC to a real hash.
       def to_hash; java_mdc.getCopyOfContextMap() end
     end
+    
+    # An instance is available as MDC :)
+    MDC = MDCWrapper.new
   end
 end
