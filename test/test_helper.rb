@@ -21,16 +21,7 @@ class MiniTest::Unit::TestCase
   def if_jruby(&block)
     yield if block_given? && jruby?
   end  
-  
-  # Configures logback for testing et al.
-  def setup_logback!
-    if_jruby do
-      require 'loggr/slf4j/jars'
-      Loggr::SLF4J.require_jars!
-      
-    end
-  end  
-  
+    
   # Skip tests, unless using jruby
   def skip_unless_jruby
     skip("requires JRuby") unless jruby?
