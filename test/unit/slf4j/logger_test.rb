@@ -19,6 +19,12 @@ class Loggr::SLF4J::LoggerTest < MiniTest::Unit::TestCase
     end
   end
   
+  def test_should_respond_to_close_and_flush
+    skip_unless_jruby
+    assert_respond_to @logger, :close
+    assert_respond_to @logger, :flush    
+  end  
+  
   def test_trace_message
     skip_unless_jruby
     @logger.trace "a trace message"
@@ -78,12 +84,44 @@ class Loggr::SLF4J::LoggerTest < MiniTest::Unit::TestCase
   
   def test_ability_to_provide_default_marker
     skip_unless_jruby
-    @logger = Loggr::SLF4J::Logger.new('test.marker', :marker => "MARK")
+    @other = Loggr::SLF4J::Logger.new('test.marker', :marker => "MARK")
 
-    @logger.info "no marker"
+    @other.info "no marker"
     assert_equal "MARK", @appender.last.getMarker().to_s
     
-    @logger.debug "other marker", "KRAM"
+    @other.debug "other marker", "KRAM"
     assert_equal "KRAM", @appender.last.getMarker().to_s
+  end
+  
+  def test_level_should_be_unknown
+    skip_unless_jruby
+    assert_equal ::Logger::UNKNOWN, @logger.level
+  end
+  
+  def test_java_logger
+    skip_unless_jruby
+    refute_nil @logger.java_logger
+    assert_kind_of Java::OrgSlf4j::Logger, @logger.java_logger
+  end
+  
+  def test_java_marker
+    skip_unless_jruby
+    assert_nil @logger.java_marker
+    
+    @other = Loggr::SLF4J::Logger.new('test.marker', :marker => 'APP')
+    refute_nil @other.java_marker
+    assert_kind_of Java::OrgSlf4j::Marker, @other.java_marker    
+  end
+  
+  def test_internal_marker_factory
+    skip_unless_jruby
+    assert_nil Loggr::SLF4J::MarkerFactory[nil]
+    assert_nil Loggr::SLF4J::MarkerFactory[' ']
+    assert_nil Loggr::SLF4J::MarkerFactory[""]
+    
+    @marker = Loggr::SLF4J::MarkerFactory["MARK"]
+    refute_nil @marker
+    assert_kind_of Java::OrgSlf4j::Marker, @marker
+    assert_same @marker, Loggr::SLF4J::MarkerFactory["MARK"]
   end
 end

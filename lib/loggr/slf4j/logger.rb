@@ -53,9 +53,9 @@ module Loggr
             end                                                                          #   end
           end                                                                            # end
           
-          def #{severity}?                                                                    # def debug?
-            !!java_logger.is_#{severity}_enabled(java_marker)                                 #   !!java_logger.is_debug_enabled(java_marker)
-          end                                                                                 # end
+          def #{severity}?                                                               # def debug?
+            !!java_logger.is_#{severity}_enabled(java_marker)                            #   !!java_logger.is_debug_enabled(java_marker)
+          end                                                                            # end
         EOT
       end
 
