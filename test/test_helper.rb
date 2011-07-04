@@ -1,27 +1,38 @@
 require 'rubygems'
 require 'minitest/autorun'
 
-module JRubyOnly
-  # Returns `true` if running in java/jruby
-  def java?; !!(RUBY_PLATFORM =~ /java/) end
-  
-  # Yield block if java
-  def java(warn = nil, &block)
-    if java?
-      yield if block_given?
-    elsif warn
-      Kernel.warn warn
-    end
-  end  
+# Just to provide some shim ;)
+module Loggr
+  module SLF4J
+  end
+  module Adapter
+  end
 end
 
-extend JRubyOnly
-
 class MiniTest::Unit::TestCase
-  extend JRubyOnly
-  include JRubyOnly
   
-  def skip_unless_java
-    skip("requires JRuby") unless java?
+  # Returns `true` if running in java/jruby  
+  def self.jruby?; !!(RUBY_PLATFORM =~ /java/) end
+    
+  # Same at instance level
+  def jruby?; self.class.jruby? end
+  
+  # Yield block if java
+  def if_jruby(&block)
+    yield if block_given? && jruby?
+  end  
+  
+  # Configures logback for testing et al.
+  def setup_logback!
+    if_jruby do
+      require 'loggr/slf4j/jars'
+      Loggr::SLF4J.require_jars!
+      
+    end
+  end  
+  
+  # Skip tests, unless using jruby
+  def skip_unless_jruby
+    skip("requires JRuby") unless jruby?
   end
 end

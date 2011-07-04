@@ -1,17 +1,20 @@
 require 'test_helper'
+require 'logger'
 require 'loggr/lint'
 require 'loggr/adapter'
 require 'loggr/adapter/rails'
 
 # mock Rails
-module Rails
+module MockRails
   def self.logger
-    @logger ||= Logger.new('/dev/null')
+    @logger ||= ::Logger.new('/dev/null')
   end
 end
 
 class Loggr::Adapter::RailsTest < MiniTest::Unit::TestCase
   def setup
+    Object.send(:remove_const, :Rails) if Object.const_defined?(:Rails)
+    Object.const_set(:Rails, ::MockRails)
     @adapter = Loggr::Adapter::RailsAdapter.new
   end
   
@@ -26,10 +29,10 @@ class Loggr::Adapter::RailsTest < MiniTest::Unit::TestCase
   end
   
   def test_should_default_to_rails_adapter
-    class TestFactory
+    clazz = Class.new(Object) do
       extend Loggr::Adapter
     end
     
-    assert_equal TestFactory.adapter, Loggr::Adapter::RailsAdapter
+    assert_equal clazz.adapter, Loggr::Adapter::Rails
   end
 end
