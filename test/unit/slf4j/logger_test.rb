@@ -54,5 +54,36 @@ class Loggr::SLF4J::LoggerTest < MiniTest::Unit::TestCase
     @logger.fatal "a fatal message"
     assert_log_event 40000, "a fatal message", @appender.last    
   end
+
+  def test_logging_message_using_block
+    skip_unless_jruby
+    @logger.info { "block info message" }
+    assert_log_event 20000, "block info message", @appender.last
+  end
   
+  def test_default_logger_has_no_marker
+    skip_unless_jruby
+    @logger.info "no marker"
+    assert_equal nil, @appender.last.getMarker()
+  end
+  
+  def test_use_progname_as_marker
+    skip_unless_jruby
+    @logger.info "with marker", "MARK"
+    assert_equal "MARK", @appender.last.getMarker().to_s
+    
+    @logger.debug "other marker", "KRAM"
+    assert_equal "KRAM", @appender.last.getMarker().to_s
+  end
+  
+  def test_ability_to_provide_default_marker
+    skip_unless_jruby
+    @logger = Loggr::SLF4J::Logger.new('test.marker', :marker => "MARK")
+
+    @logger.info "no marker"
+    assert_equal "MARK", @appender.last.getMarker().to_s
+    
+    @logger.debug "other marker", "KRAM"
+    assert_equal "KRAM", @appender.last.getMarker().to_s
+  end
 end

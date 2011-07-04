@@ -3,6 +3,19 @@ require 'loggr/severity'
 module Loggr
   module SLF4J
     
+    # Simple marker factory which uses `org.slf4j.MarkerFactory`, but
+    # caches the result in a local ruby hash, by name.
+    class MarkerFactory
+      
+      # Get marker for any non-empty string.
+      def self.[](name)
+        name = name.to_s.strip
+        return nil if name.length == 0
+        @markers ||= {}
+        @markers[name] ||= Java::OrgSlf4j::MarkerFactory.getMarker(name)
+      end
+    end
+    
     # A logger which is backed by SLF4J, thus only useable in a JRuby environment.
     #
     class Logger
@@ -22,11 +35,8 @@ module Loggr
       # Create a new Logger instance for the given name
       #
       def initialize(name, options = {})
-        marker = options[:marker].to_s
-        marker = 'APP' if marker.length == 0
-        
         @java_logger = Java::OrgSlf4j::LoggerFactory.getLogger(name.to_s)
-        @java_marker = Java::OrgSlf4j::MarkerFactory.getMarker(marker)
+        @java_marker = MarkerFactory[options[:marker]]
         
         # seriously, this is handled by slf4j and pretty dynamic
         @level = Logger::UNKNOWN
@@ -36,11 +46,12 @@ module Loggr
       # Create the logger methods via meta programming, sweet.
       %w{trace debug info warn error}.each do |severity|
         class_eval <<-EOT, __FILE__, __LINE__ + 1
-          def #{severity}(message = nil, progname = nil, &block)                              # def debug(message = nil, progname = nil, &block)
-            if java_logger.is_#{severity}_enabled(java_marker)                                #   if java_logger.is_debug_enabled(java_marker)
-              java_logger.#{severity}(java_marker, build_message(message, progname, &block))  #     java_logger.debug(java_marker, build_message(message, progname, &block))
-            end                                                                               #   end
-          end                                                                                 # end
+          def #{severity}(message = nil, progname = nil, &block)                         # def debug(message = nil, progname = nil, &block)
+            marker = (progname ? MarkerFactory[progname] : nil) || java_marker           #   marker = (progname ? MarkerFactory[progname] : nil) || java_marker
+            if java_logger.is_#{severity}_enabled(marker)                                #   if java_logger.is_debug_enabled(marker)
+              java_logger.#{severity}(marker, build_message(message, progname, &block))  #     java_logger.debug(marker, build_message(message, progname, &block))
+            end                                                                          #   end
+          end                                                                            # end
           
           def #{severity}?                                                                    # def debug?
             !!java_logger.is_#{severity}_enabled(java_marker)                                 #   !!java_logger.is_debug_enabled(java_marker)
