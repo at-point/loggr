@@ -9,6 +9,19 @@ class Loggr::SLF4J::LoggerTest < MiniTest::Unit::TestCase
       @logger = Loggr::SLF4J::Logger.new('test')
     end
   end
+  
+  def test_setting_logger_name
+    skip_unless_jruby
+    assert_equal 'test', @logger.java_logger.getName()
+    assert_equal 'test', Loggr::SLF4J::Logger.new(:test).java_logger.getName()    
+    assert_equal 'test/fancy::Logger', Loggr::SLF4J::Logger.new(:'test/fancy::Logger').java_logger.getName()    
+    assert_equal 'test.Logger', Loggr::SLF4J::Logger.new('test.Logger').java_logger.getName()
+    assert_equal 'Loggr::SLF4J', Loggr::SLF4J::Logger.new('Loggr::SLF4J').java_logger.getName()
+    assert_equal 'Loggr::SLF4J/basic', Loggr::SLF4J::Logger.new('Loggr::SLF4J/basic').java_logger.getName()        
+    assert_equal 'loggr.slf4j.LoggerTest', Loggr::SLF4J::Logger.new(self).java_logger.getName()
+    assert_equal 'loggr.slf4j.LoggerTest', Loggr::SLF4J::Logger.new(self.class).java_logger.getName()
+    assert_equal 'loggr.SLF4J', Loggr::SLF4J::Logger.new(Loggr::SLF4J).java_logger.getName()
+  end
 
   def test_behaves_like_stdlib_logger
     skip_unless_jruby
@@ -94,7 +107,7 @@ class Loggr::SLF4J::LoggerTest < MiniTest::Unit::TestCase
   
   def test_level_should_be_unknown
     skip_unless_jruby
-    assert_equal ::Logger::UNKNOWN, @logger.level
+    assert_equal Loggr::SLF4J::Logger::UNKNOWN, @logger.level
   end
   
   def test_java_logger

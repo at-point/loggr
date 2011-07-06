@@ -35,6 +35,7 @@ module Loggr
       # Create a new Logger instance for the given name
       #
       def initialize(name, options = {})
+        name = normalize_name_java(name)
         @java_logger = Java::OrgSlf4j::LoggerFactory.getLogger(name.to_s)
         @java_marker = MarkerFactory[options[:marker]]
         
@@ -70,7 +71,18 @@ module Loggr
         def build_message(message = nil, progname = nil, &block)
           message = yield if message.nil? && block_given?
           message.to_s.gsub(/$\s*^/, '')
-        end      
+        end
+        
+        # If a class, module or object is used converts `Foo::Bar::SomeThing` to
+        # java notation: `foo.bar.SomeThing`. Symbols and Strings are left as is!
+        #
+        def normalize_name_java(name)
+          return name.to_s if name.respond_to?(:to_str) || name.is_a?(Symbol)
+          name = name.is_a?(Module) ? name.name.to_s : name.class.name.to_s
+          parts = name.split('::')
+          last  = parts.pop
+          parts.map { |p| p.downcase }.push(last).join('.')
+        end
     end
   end
 end
