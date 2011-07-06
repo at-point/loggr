@@ -1,6 +1,9 @@
 require 'bundler'
 require 'rake/testtask'
 
+# to fix warnings
+include Rake::DSL
+
 Bundler::GemHelper.install_tasks
 
 desc 'Test the loggr gem.'
