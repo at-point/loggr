@@ -16,7 +16,12 @@ module Loggr
         # Create a new SLF4JLogger instance.
         def build_new_logger(name, options = {})
           Loggr::SLF4J::Logger.new(name, options)
-        end            
+        end
+        
+        # Uses Logger#in_java_notation on name
+        def normalize_name(name)
+          Loggr::SLF4J::Logger.in_java_notation(name)
+        end
     end
     
     # THE instance of it
