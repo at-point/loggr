@@ -1,4 +1,5 @@
 require 'test_helper'
+require 'loggr/lint'
 require 'loggr/adapter'
 require 'loggr/adapter/base'
 require 'loggr/factory'
@@ -15,7 +16,13 @@ class Loggr::FactoryTest < MiniTest::Unit::TestCase
   def setup
     Object.send(:remove_const, :Rails) if Object.const_defined?(:Rails)
     @factory = MockInstanceFactory.new
+    @adapter = LoggerFactory # lint it!
+    @adapter.adapter = Loggr::Adapter::Base
   end
+    
+  def teardown
+    unlink_log_files
+  end  
 
   def test_default_adapter_is_base
     assert_equal @factory.adapter, Loggr::Adapter::Base
@@ -40,5 +47,14 @@ class Loggr::FactoryTest < MiniTest::Unit::TestCase
   def test_change_adapter_to_instance
     @factory.adapter = Mocks::MyAdapter.new
     assert_kind_of Mocks::MyAdapter, @factory.adapter
+  end
+  
+  # Lint LoggerFactory, should work the same as an adapter
+  include Loggr::Lint::Tests
+  
+  # Ensure class
+  def test_logger_factory
+    singleton_class = (class << LoggerFactory; self end)
+    assert singleton_class.included_modules.include?(Loggr::Adapter), "LoggerFactory should extend Loggr::Adapter"
   end
 end
