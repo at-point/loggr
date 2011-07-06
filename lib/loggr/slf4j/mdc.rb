@@ -26,7 +26,7 @@ module Loggr
       def clear; java_mdc.clear() end
       
       # Convert MDC to a real hash.
-      def to_hash; java_mdc.getCopyOfContextMap() end
+      def to_hash; java_mdc.getCopyOfContextMap().freeze end
     end
     
     # An instance is available as MDC :)

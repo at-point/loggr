@@ -1,6 +1,5 @@
 require 'test_helper'
 require 'logback_helper'
-require 'loggr/slf4j/jars'
 
 class Loggr::SLF4J::LoggerTest < MiniTest::Unit::TestCase
   def setup
