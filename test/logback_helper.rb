@@ -1,7 +1,7 @@
 if RUBY_PLATFORM =~ /java/
   require 'java'
   require 'loggr/slf4j/jars'  
-  Loggr::SLF4J.require_jars!
+  Loggr::SLF4J::Jars.require_slf4j_jars!
   
   class ArrayAppender
     include Java::ChQosLogbackCore::Appender
@@ -37,6 +37,7 @@ class MiniTest::Unit::TestCase
     if RUBY_PLATFORM =~ /java/
       @appender = ArrayAppender.new
       
+      Java::OrgSlf4j::MDC.clear()
       logger_context = Java::OrgSlf4j::LoggerFactory.getILoggerFactory()
       root_logger = logger_context.getLogger(Java::OrgSlf4j::Logger::ROOT_LOGGER_NAME)
       root_logger.detachAndStopAllAppenders()
