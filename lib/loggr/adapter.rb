@@ -30,6 +30,8 @@ module Loggr
         
     # Get the backend, if no backend is defined uses the default backend.
     #
+    # If running in a rails environment, automatically chooses the rails
+    # adapter as a default, else base is used.
     def adapter
       @adapter ||= Object.const_defined?(:Rails) ? Loggr::Adapter::Rails : Loggr::Adapter::Base
     end
@@ -49,8 +51,8 @@ module Loggr
     # - `:level`, Fixnum, starting log level, @see `Loggr::Severity`
     # - `:marker`, String, name of the category/marker
     #
-    # If a adapter does not support setting a specific option, just
-    # ignore it :)
+    # If an adapter does not support setting a specific option, just
+    # ignore it.
     def logger(name, options = {}, &block)
       use_adapter = options.key?(:adapter) ? get_adapter(options.delete(:adapter)) : self.adapter
       use_adapter.logger(name, options).tap do |logger|
