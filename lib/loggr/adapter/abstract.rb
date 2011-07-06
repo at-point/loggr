@@ -19,7 +19,7 @@ module Loggr
       def mdc
         mdc_key = "#{self.class.name}.mdc"
         Thread.current[mdc_key] ||= Hash.new
-      end
+      end      
     end
   end
 end
