@@ -29,6 +29,10 @@ https://github.com/at-point/loggr/issues
 
 http://rubydoc.info/github/at-point/loggr/master/frames
 
+**Gem** The latest stable gem is always on rubygems.org.
+
+http://rubygems.org/gems/loggr
+
 Installation
 ------------
 
@@ -82,7 +86,7 @@ options, but this is intended :)
 
 ### Bundled Adapters
 
-**<code>LoggerFactory.adapter = :base</code>**
+**LoggerFactory.adapter = :base**
 
 The base adapter creates ruby stdlib `Logger` instances. Supported options for
 `LoggerFactory.logger(name, options = {})` are:
@@ -90,19 +94,19 @@ The base adapter creates ruby stdlib `Logger` instances. Supported options for
 - `:to`, String or IO, where to log should be written to (default: `"#{name}.log"`)
 - `:level`, Fixnum, one of `Logger::Severity`, the minimum severity to log (default: `Logger::Severity::DEBUG`)
 
-**<code>LoggerFactory.adapter = :buffered</code>**
+**LoggerFactory.adapter = :buffered**
 
 Creates `ActiveSupport::BufferedLogger` instances and supports the same options
 as the `:base` adapter.
 
-**<code>LoggerFactory.adapter = :rails</code>**
+**LoggerFactory.adapter = :rails**
 
 This adapter alwasy returns the `Rails.logger`, which is very useful e.g. in development
 environments or testing, where we just care that it's somewhere in our `logs/development.log`.
 *Note:* Rails is automatically detected and the rails adapter is the default adapter when
 `::Rails` is present - else the base adapter is the default.
 
-**<code>LoggerFactory.adapter = :slf4j</code>**
+**LoggerFactory.adapter = :slf4j**
 
 SLF4J only works with JRuby (because it's Java) and you are responsible for a) having an
 SLF4J implementation on the classpath and it's configuration. Furthermore slf4j supports
