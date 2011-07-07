@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
   s.name        = "loggr"
   s.version     = Loggr::VERSION
   s.platform    = Gem::Platform::RUBY
-  s.summary     = 'Logger factory framework (similar to SLF4J)'
+  s.summary     = 'Logger factory framework (including an SLF4J wrapper)'
   s.description = 'Adapters for different ruby logging backends. Create loggers using different adapters, like Logger (Stdlib), Rails or SLF4J (in JRuby only).'
 
   s.required_ruby_version     = ">= 1.8.7"
