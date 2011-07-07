@@ -16,8 +16,8 @@ trying to take advante of SLF4J-only features like the MDC or markers.
 Information
 -----------
 
-**Wiki** The Loggr Wiki has additional information and how-to articles answering the most basic
-questions, hopefully.
+**Wiki** The Loggr Wiki will hopefully soon be filled with how-to articles and
+frequently asked questions.
 
 https://github.com/at-point/loggr/wiki
 
@@ -82,7 +82,7 @@ options, but this is intended :)
 
 ### Bundled Adapters
 
-**`LoggerFactory.adapter = :base`**
+**<code>LoggerFactory.adapter = :base</code>**
 
 The base adapter creates ruby stdlib `Logger` instances. Supported options for
 `LoggerFactory.logger(name, options = {})` are:
@@ -90,19 +90,19 @@ The base adapter creates ruby stdlib `Logger` instances. Supported options for
 - `:to`, String or IO, where to log should be written to (default: `"#{name}.log"`)
 - `:level`, Fixnum, one of `Logger::Severity`, the minimum severity to log (default: `Logger::Severity::DEBUG`)
 
-**`LoggerFactory.adapter = :buffered`**
+**<code>LoggerFactory.adapter = :buffered</code>**
 
 Creates `ActiveSupport::BufferedLogger` instances and supports the same options
 as the `:base` adapter.
 
-**`LoggerFactory.adapter = :rails`**
+**<code>LoggerFactory.adapter = :rails</code>**
 
 This adapter alwasy returns the `Rails.logger`, which is very useful e.g. in development
 environments or testing, where we just care that it's somewhere in our `logs/development.log`.
 *Note:* Rails is automatically detected and the rails adapter is the default adapter when
 `::Rails` is present - else the base adapter is the default.
 
-**`LoggerFactory.adapter = :slf4j`**
+**<code>LoggerFactory.adapter = :slf4j</code>**
 
 SLF4J only works with JRuby (because it's Java) and you are responsible for a) having an
 SLF4J implementation on the classpath and it's configuration. Furthermore slf4j supports
