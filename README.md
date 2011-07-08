@@ -92,7 +92,7 @@ The base adapter creates ruby stdlib `Logger` instances. Supported options for
 `LoggerFactory.logger(name, options = {})` are:
 
 - `:to`, String or IO, where to log should be written to (default: `"#{name}.log"`)
-- `:level`, Fixnum, one of `Logger::Severity`, the minimum severity to log (default: `Logger::Severity::DEBUG`)
+- `:level`, Fixnum, one of `Logger::Severity`, the minimum severity to log (default: `Logger::Severity::INFO`)
 
 **LoggerFactory.adapter = :buffered**
 
@@ -138,8 +138,8 @@ access to an MDC, so the MDC can be used in code no matter the adapter, a sample
 When using SLF4J all statements would now be annotated with the IP from where the request
 was made from.
 
-The _SLF4J_ Wrapper
-===================
+The SLF4J Wrapper
+=================
 
 Apart from the logger factory, this gem provides a ruby wrapper for logging using SLF4J and
 taking advantage of:
