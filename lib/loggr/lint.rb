@@ -9,9 +9,16 @@ module Loggr
     # by including <tt>Logger::Lint::Tests</tt>
     # in your tests.
     #
-    # Ensure you set the instance variable <tt>@adapter</tt> to your adapter.
+    # Ensure you set the instance variable <tt>@adapter</tt> to the adapter to lint.
     #
     module Tests
+      
+      # Verifies `adapter#logger`, it checks that:
+      #
+      # - the factory method named #logger exists
+      # - that it accepts two arguments, name and options hash
+      # - the returned instnace responds to debug, info, warn, error and fatal
+      #
       def test_adapter_logger
         assert adapter.respond_to?(:logger), "The adapter should respond to #logger"
         assert adapter.method('logger').arity == -2, "The adapter should accept two parameters for #logger, name and options hash"
@@ -25,7 +32,13 @@ module Loggr
       ensure
         @tempfile.unlink if @tempfile
       end
-      
+            
+      # Verifies `adapter#mdc`, it checks that:
+      #
+      # - the factory method named #mdc exists
+      # - it accepts no arguments
+      # - the returned mdc responds to []=, [], delete, clear and to_hash
+      #
       def test_adapter_mdc
         assert adapter.respond_to?(:mdc), "The adapter should respond to #mdc"
         assert adapter.method('mdc').arity == 0, "The adapter should accept no parameters for #mdc"
@@ -40,7 +53,8 @@ module Loggr
             
       protected
       
-        # Access the adapter, defined by <tt>@adapter</tt>.
+        # Access the adapter, must be defined <tt>@adapter</tt> in the
+        # `setup` method.
         def adapter
           assert !!@adapter, "An adapter must be defined"
           @adapter
