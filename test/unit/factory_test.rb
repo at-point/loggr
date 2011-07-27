@@ -44,6 +44,21 @@ class Loggr::FactoryTest < MiniTest::Unit::TestCase
     assert_equal @factory.adapter, Loggr::Adapter::NOP    
   end
   
+  def test_change_adapter_to_nop
+    @factory.adapter = :nop
+    assert_equal @factory.adapter, Loggr::Adapter::NOP
+  end
+
+  def test_change_adapter_to_nop_by_using_nil
+    @factory.adapter = nil
+    assert_equal @factory.adapter, Loggr::Adapter::NOP
+  end
+
+  def test_change_adapter_to_nop_by_using_false
+    @factory.adapter = false
+    assert_equal @factory.adapter, Loggr::Adapter::NOP
+  end
+    
   def test_change_adapter_to_instance
     @factory.adapter = Mocks::MyAdapter.new
     assert_kind_of Mocks::MyAdapter, @factory.adapter

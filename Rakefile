@@ -1,8 +1,6 @@
+require 'rubygems'
 require 'bundler'
 require 'rake/testtask'
-
-# to fix warnings
-include Rake::DSL
 
 Bundler::GemHelper.install_tasks
 
