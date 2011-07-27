@@ -19,31 +19,31 @@ class Loggr::FactoryTest < MiniTest::Unit::TestCase
     @adapter = LoggerFactory # lint it!
     @adapter.adapter = Loggr::Adapter::Base
   end
-    
+
   def teardown
     unlink_log_files
-  end  
+  end
 
   def test_default_adapter_is_base
     assert_equal @factory.adapter, Loggr::Adapter::Base
   end
-  
+
   def test_change_adapter_using_symbol
     @factory.adapter = :buffered
     assert_equal @factory.adapter, Loggr::Adapter::Buffered
   end
-  
+
   def test_change_adapter_to_slf4j_using_symbol
-    skip_unless_jruby    
+    skip_unless_jruby
     @factory.adapter = :slf4j
-    assert_equal @factory.adapter, Loggr::Adapter::SLF4J    
+    assert_equal @factory.adapter, Loggr::Adapter::SLF4J
   end
-  
+
   def test_change_adapter_using_string
     @factory.adapter = 'NOP'
-    assert_equal @factory.adapter, Loggr::Adapter::NOP    
+    assert_equal @factory.adapter, Loggr::Adapter::NOP
   end
-  
+
   def test_change_adapter_to_nop
     @factory.adapter = :nop
     assert_equal @factory.adapter, Loggr::Adapter::NOP
@@ -58,15 +58,15 @@ class Loggr::FactoryTest < MiniTest::Unit::TestCase
     @factory.adapter = false
     assert_equal @factory.adapter, Loggr::Adapter::NOP
   end
-    
+
   def test_change_adapter_to_instance
     @factory.adapter = Mocks::MyAdapter.new
     assert_kind_of Mocks::MyAdapter, @factory.adapter
   end
-  
+
   # Lint LoggerFactory, should work the same as an adapter
   include Loggr::Lint::Tests
-  
+
   # Ensure class
   def test_logger_factory
     singleton_class = (class << LoggerFactory; self end)
