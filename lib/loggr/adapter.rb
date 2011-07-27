@@ -85,7 +85,9 @@ module Loggr
       # Try to get adapter class from Symbol, String or use Object as-is.
       #
       def get_adapter(adp)
-        adp = Loggr::Adapter::SLF4J if adp == :slf4j # okay, this is only because we can't camelize it :)
+        # okay, this is only because we can't camelize it :)
+        adp = Loggr::Adapter::NOP if adp == :nop || !adp
+        adp = Loggr::Adapter::SLF4J if adp == :slf4j
         
         # Code adapter from ActiveSupport::Inflector#camelize
         # https://github.com/rails/rails/blob/v3.0.9/activesupport/lib/active_support/inflector/methods.rb#L30
