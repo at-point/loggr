@@ -86,8 +86,7 @@ module Loggr
       #
       def get_adapter(adp)
         # okay, this is only because we can't camelize it :)
-        adp = Loggr::Adapter::NOP if adp == :nop || !adp
-        adp = Loggr::Adapter::SLF4J if adp == :slf4j
+        adp = Loggr::Adapter::NOP if !adp
         
         # Code adapter from ActiveSupport::Inflector#camelize
         # https://github.com/rails/rails/blob/v3.0.9/activesupport/lib/active_support/inflector/methods.rb#L30
@@ -96,7 +95,7 @@ module Loggr
         clazz = adp
         
         if adp.respond_to?(:to_str)
-          const = begin Loggr::Adapter.const_get(adp.to_s) rescue nil end
+          const = begin Loggr::Adapter.const_get(adp.to_s) rescue begin Loggr::Adapter.const_get(adp.to_s.upcase) rescue nil end end
           unless const
             # code adapter from ActiveSupport::Inflector#constantize
             # https://github.com/rails/rails/blob/v3.0.9/activesupport/lib/active_support/inflector/methods.rb#L107
