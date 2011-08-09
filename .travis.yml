@@ -1,8 +1,8 @@
 rvm:
   - 1.8.7
   - 1.9.2
-  - rbx
   - jruby
+  - rbx
 notifications:
   recipients:
-	  - lukas@at-point.ch
+    - lukas@at-point.ch
