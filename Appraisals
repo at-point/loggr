@@ -5,3 +5,7 @@ end
 appraise "activesupport-3.1" do
   gem 'activesupport', '~> 3.1.0'
 end
+
+appraise "activesupport-head" do
+  gem 'activesupport', :path => '../../rails/activesupport/'
+end
