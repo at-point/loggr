@@ -13,7 +13,7 @@ module Loggr
       def logger(name, options = {})
         name = normalize_name(name)
         @loggers ||= {}
-        @loggers[name] ||= Loggr::Support::Annotations.enhance(build_new_logger(name, options))
+        @loggers[name] ||= build_new_logger(name, options)
       end
 
       protected
@@ -22,10 +22,11 @@ module Loggr
         # creating a new logger...
         #
         def build_new_logger(name, options = {})
-          ::Logger.new(options[:to] || "#{name.to_s.gsub(/[:\s\/]+/, '_')}.log").tap do |logger|
+          logger = ::Logger.new(options[:to] || "#{name.to_s.gsub(/[:\s\/]+/, '_')}.log").tap do |logger|
             logger.level = options[:level] || Logger::INFO
             logger.progname = name
           end
+          Loggr::Support::Annotations.enhance(logger)
         end
 
         # Because we should also allow using class names, or objects
