@@ -17,6 +17,7 @@ module Loggr
       # to handle both `tagged` and `mapped` on the logger itself.
       #
       def self.enhance(logger)
+        return logger if logger.respond_to?(:tagged) && logger.respond_to?(:mapped)
         return ::ActiveSupport::TaggedLogging.new(logger) if defined?(::ActiveSupport::TaggedLogging)
         logger.send(:extend, NOPSupport)
       end
