@@ -1,21 +1,21 @@
 require 'loggr/adapter/abstract'
-require 'logger'
+require 'loggr/support/annotations'
 
 module Loggr
   module Adapter
-    
+
     # Default backend which is backed Rubys Stdlib Logger.
     #
     class BaseAdapter < AbstractAdapter
-      
-      # 
+
+      #
       #
       def logger(name, options = {})
         name = normalize_name(name)
         @loggers ||= {}
-        @loggers[name] ||= build_new_logger(name, options)
+        @loggers[name] ||= Loggr::Support::Annotations.enhance(build_new_logger(name, options))
       end
-      
+
       protected
         # Constructs a new logger instance for the supplied options, is called
         # by `#loggers` when no logger with this name already exists - instead of
@@ -25,9 +25,9 @@ module Loggr
           ::Logger.new(options[:to] || "#{name.to_s.gsub(/[:\s\/]+/, '_')}.log").tap do |logger|
             logger.level = options[:level] || Logger::INFO
             logger.progname = name
-          end        
+          end
         end
-        
+
         # Because we should also allow using class names, or objects
         # to construct new loggers (like in SLF4J), it makes sense to
         # have a method which normalizes some input, be it a string or
@@ -45,9 +45,9 @@ module Loggr
             when Module then name.name.to_s
             else name.class.name.to_s
           end
-        end        
+        end
     end
-    
+
     # Okay, basically a singleton thus create instance
     Base = BaseAdapter.new
   end
