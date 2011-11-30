@@ -17,22 +17,20 @@ class Loggr::Adapter::RailsTest < MiniTest::Unit::TestCase
     Object.const_set(:Rails, ::MockRails)
     @adapter = Loggr::Adapter::RailsAdapter.new
   end
-  
-  include Loggr::Lint::Tests
-  
+
   def test_rails_should_be_a_rails_adapter
     assert_kind_of Loggr::Adapter::RailsAdapter, Loggr::Adapter::Rails
   end
-  
+
   def test_should_use_same_logger_as_rails
     assert_equal ::Rails.logger, Loggr::Adapter::Rails.logger('log')
   end
-  
+
   def test_should_default_to_rails_adapter
     clazz = Class.new do
       extend Loggr::Adapter
     end
-    
+
     assert_equal Loggr::Adapter::Rails, clazz.adapter
   end
 end
