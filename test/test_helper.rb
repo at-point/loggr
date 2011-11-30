@@ -1,6 +1,7 @@
 require 'rubygems'
 require 'minitest/autorun'
 require 'tempfile'
+require 'active_support/version'
 
 # Just to provide some shim ;)
 module Loggr
@@ -29,6 +30,11 @@ class MiniTest::Unit::TestCase
   # Skip tests, unless using jruby
   def skip_unless_jruby
     skip("requires JRuby") unless jruby?
+  end
+
+  # Returns `true` if >= ActiveSupport 3.2 is used
+  def as_3_2?
+    ActiveSupport::VERSION::MAJOR >= 3 && ActiveSupport::VERSION::MINOR >= 2
   end
 
   # Yields path to tempfile into block, ensures is cleaned up
