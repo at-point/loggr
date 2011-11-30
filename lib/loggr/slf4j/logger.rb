@@ -1,5 +1,5 @@
 require 'loggr/severity'
-require 'logger/slf4j/mdc'
+require 'loggr/slf4j/mdc'
 
 module Loggr
   module SLF4J
@@ -31,7 +31,7 @@ module Loggr
       attr_reader :auto_flushing, :flush, :close
 
       # Access raw SLF4J logger & marker instances
-      attr_reader :java_logger, :java_marker
+      attr_reader :java_logger, :java_marker, :java_mdc
 
       # Create a new Logger instance for the given name
       #
@@ -39,6 +39,7 @@ module Loggr
         name = self.class.in_java_notation(name)
         @java_logger = Java::OrgSlf4j::LoggerFactory.getLogger(name.to_s)
         @java_marker = MarkerFactory[options[:marker]]
+        @java_mdc = options[:mdc] || Loggr::SLF4J::MDC
 
         # seriously, this is handled by slf4j and pretty dynamic
         @level = Logger::UNKNOWN
@@ -64,6 +65,27 @@ module Loggr
       # Add support for fatal, just alias to error
       alias_method :fatal, :error
       alias_method :fatal?, :error?
+
+      # Uses the mapped diagnostic context to add tags, like
+      # ActiveSupport 3.2's TaggedLogger.
+      #
+      def tagged(*new_tags)
+        old_tags = java_mdc[:tags].to_s
+        java_mdc[:tags] = (old_tags.split(', ') + new_tags.flatten).join(', ')
+        yield
+      ensure
+        java_mdc[:tags] = old_tags.length == 0 ? nil : old_tags
+      end
+
+      # A more describtive alternative to tagged is mapped, which just makes
+      # use of the MDC directly, basically.
+      def mapped(hash = {})
+        old_keys = hash.keys.inject({}) { |hsh,k| hsh[k] = java_mdc[k]; hsh }
+        hash.each { |key, value| java_mdc[key] = value }
+        yield
+      ensure
+        old_keys.each { |key, value| java_mdc[key] = value }
+      end
 
       # If a class, module or object is used converts `Foo::Bar::SomeThing` to
       # java notation: `foo.bar.SomeThing`. Symbols and Strings are left as is!
