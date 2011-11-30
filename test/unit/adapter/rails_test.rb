@@ -18,12 +18,15 @@ class Loggr::Adapter::RailsTest < MiniTest::Unit::TestCase
     @adapter = Loggr::Adapter::RailsAdapter.new
   end
 
+  include Loggr::Lint::Tests
+
   def test_rails_should_be_a_rails_adapter
     assert_kind_of Loggr::Adapter::RailsAdapter, Loggr::Adapter::Rails
   end
 
   def test_should_use_same_logger_as_rails
-    assert_equal ::Rails.logger, Loggr::Adapter::Rails.logger('log')
+    @logger = Loggr::Adapter::Rails.logger('log')
+    assert_equal ::Rails.logger, as_3_2? ? @logger.instance_variable_get('@logger') : @logger
   end
 
   def test_should_default_to_rails_adapter

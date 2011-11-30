@@ -1,8 +1,9 @@
 require 'loggr/adapter/abstract'
+require 'loggr/support/annotations'
 
 module Loggr
   module Adapter
-    
+
     # Always uses the logger defined on `Rails.logger`, CAVEAT ensure to never
     # ever set `Rails.logger` to this backend, i.e.:
     #
@@ -21,15 +22,16 @@ module Loggr
     #    config.logger = Loggr.logger('rails', :backend => Loggr::Adapter::Buffered)
     #
     class RailsAdapter < AbstractAdapter
-      
+
       # The rails backend ignores all options as it just returns
       # always returns `Rails.logger` :)
       #
+      # Ensures we get some black magic using `tagged` and `mapped`.
       def logger(name, options = {})
-        ::Rails.logger
+        Loggr::Support::Annotations.enhance ::Rails.logger
       end
     end
-    
+
     # THE Rails backed implementation instance
     Rails = RailsAdapter.new
   end
