@@ -1,7 +1,6 @@
 require 'test_helper'
 require 'loggr/lint'
 require 'loggr/adapter/buffered'
-require 'active_support/version'
 
 class Loggr::Adapter::BufferedTest < MiniTest::Unit::TestCase
 
