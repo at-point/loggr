@@ -5,7 +5,7 @@ Loggr provides a factory for creating logger instances. It:
 
 - Provides a wrapper for SLF4J (on JRuby)
 - Has adapters for Stdlib Logger and ActiveSupport::BufferedLogger
-- Supports Rails
+- Supports Rails, including the new `tagged` method
 - Handles using a Mapped Diagnostic Context (MDC)
 
 **So, why should I use a logger factory instead of just `Logger.new('out.log')`
@@ -15,11 +15,6 @@ trying to take advante of SLF4J-only features like the MDC or markers.
 
 Information
 -----------
-
-**Wiki** The Loggr Wiki will hopefully soon be filled with how-to articles and
-frequently asked questions.
-
-https://github.com/at-point/loggr/wiki
 
 **Bug Reports** No software is without bugs, if you discover a problem please report the issue.
 
@@ -39,11 +34,11 @@ Installation
 Like any gem, just add it to the Gemfile:
 
     # stable version
-    gem 'loggr', '~> 1.0.0'
-    
+    gem 'loggr', '~> 1.1.0'
+
     # latest development version
     gem 'loggr', :git => 'git://github.com/at-point/loggr.git'
-    
+
 Getting started
 ===============
 
@@ -62,7 +57,7 @@ Once an adapter has been specified new logger instances can be easily created us
     def logger
       @logger ||= LoggerFactory.logger 'my.app.SomeClass', :marker => "WORKER"
     end
-    
+
 The adapter then handles creating new logger instances and uses features like the ability
 to set markers (if supported), or setting a logger name. Based on the adapter a new logger
 will be returned with all things defined like the marker, or a custom logger name - if the
@@ -80,7 +75,7 @@ defines how logger instances are really created.
     LoggerFactory.logger 'app'                      # create a logger with named app
     LoggerFactory.logger 'app', :to => 'debug.out'  # write to debug.out
     LoggerFactory.logger 'app', :to => $stderr      # write to stderr
-    
+
 **Note:** not all adapters support all options, so some adapters might just ignore certain
 options, but this is intended :)
 
@@ -116,27 +111,31 @@ these options for `LoggerFactory.logger(name, options = {})`:
 
 ### Using the Mapped Diagnostic Context (MDC)
 
-Some loggers provide a MDC (or mapped diagnostic context), which can be used to annotate
-log outputs with additional bits of information. At the moment only SLF4J really can make
+Some loggers provide a MDC (or mapped diagnostic context) or a similar feature like
+ActiveSupport 3.2s `TaggedLogging#tagged` which can be used to annotate log outputs with
+additional bits of information. At the moment only SLF4J and ActiveSupport 3.2 can make
 use of this. Though, to provide a clean and consistent API all adapters _must_ provide
-access to an MDC, so the MDC can be used in code no matter the adapter, a sample use case
-(in Rails):
+access to an MDC and each logger _must_ respond to both `tagged` and `mapped`, so these
+features can be used in code no matter the adapter.
+
+A sample use case:
 
     # app/controllers/application_controller.rb
     class ApplicationController < ActionController::Base
       around_filter :push_ip_to_mdc
-      
-      private        
+      def logger; @logger ||= LoggerFactory.logger('sample') end
+
+      private
         def push_ip_to_mdc
-          LoggerFactory.mdc[:ip] = request.ip
-          yield
-        ensure
-          LoggerFactory.mdc.delete(:ip)
+          logger.mapped(:ip => request.ip) do
+            yield
+          end
         end
     end
-    
+
 When using SLF4J all statements would now be annotated with the IP from where the request
-was made from.
+was made from, when using Rails 3.2 it would use it's support for `tagged` and add a tag
+named `ip=....`.
 
 The SLF4J Wrapper
 =================
@@ -144,10 +143,10 @@ The SLF4J Wrapper
 Apart from the logger factory, this gem provides a ruby wrapper for logging using SLF4J and
 taking advantage of:
 
-- Same API as exposed by Stdlib Logger or AS::BufferedLogger
+- Same API as exposed by Stdlib Logger, AS::BufferedLogger and AS::TaggedLogging
 - SLF4J markers
 - The Mapped Diagnostic Context (MDC)
-- Access to SLF4J & Logback implementation JARs 
+- Access to SLF4J & Logback implementation JARs
 
 The Logger
 ----------
@@ -156,21 +155,21 @@ Creating a new logger is as simple as creating instances of `Loggr::SLF4J::Logge
 
     # logger named "my.package.App"
     @logger = Loggr::SLF4J::Logger.new 'my.package.App'
-    
+
     # logger named "some.sample.Application" => classes are converted to java notation
     @logger = Loggr::SLF4J::Logger.new Some::Sample::Application
-    
+
     # logger with a default marker named "APP"
     @logger = Loggr::SLF4J::Logger.new 'my.package.App', :marker => 'APP'
-    
+
 Logging events is like using Stdlib Logger:
 
     # log with level INFO
     @logger.info "some info message"
-    
+
     # log with level DEBUG, if enabled
     @logger.debug "verbose information" if @logger.debug?
-    
+
     # log with level DEBUG and marker "QUEUE" (masking as progname)
     @logger.debug "do something", "QUEUE"
 
@@ -191,21 +190,42 @@ It's a good practice to wrap MDC set/get into begin/ensure blocks to ensure the 
 is cleared afterwards, even in case of errors. The user is responsible for getting rid
 of these values. To just clear all values use `Loggr::SLF4J::MDC.clear`
 
+Tagging and mapping
+-------------------
+
+As an alternative to using the MDC directly, each logger exposes a method which is more
+ruby-like than setting the MDC and having to handle the `ensure` all by itself.
+
+    logger.mapped(:user => username) do
+      do_some_stuff
+    end
+
+This ensures that the key is cleared at the end, these calls can also be easily nested.
+Starting with ActiveSupport 3.2 there's support for `TaggedLogging`, SLF4J mimics this
+behaviour by using the mapped diagnostic context:
+
+    logger.tagged("some", "values") do
+      do_some_stuff
+    end
+
+Within the block the MDC has been assigned `some, values` to the key `:tags`. Nested values
+are just appended to this key.
+
 Extending & Contributing
 ========================
 
 Of course any custom adapters (e.g. for log4r or the logging gem) are greatly appreciated.
 To write a custom adapter just do something like:
 
-    class MyModule::MyCustomAdapter < Loggr::Adpater::AbstractAdapter    
+    class MyModule::MyCustomAdapter < Loggr::Adpater::AbstractAdapter
       def logger(name, options = {})
         # build logger instances and return it
-      end      
+      end
     end
-    
+
     # use custom adapter
     LoggerFactory.adapter = MyModule::MyCustomAdapter.new
-    
+
 Extending from `Loggr::Adapter::AbstractAdapter` provides the adapter with a default
 MDC implementation (backed by a hash stored in a thread local).
 
@@ -214,7 +234,7 @@ and the logger and mdc returned adhere to the API.
 
     class MyModule::MyCustomAdapterTest < Test::Unit::TestCase
        include Loggr::Lint::Tests
-       
+
        def setup
          # required, so the Lint Tests can pick it up
          @adapter = MyModule::MyCustomAdapter.new
