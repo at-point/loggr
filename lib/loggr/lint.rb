@@ -18,6 +18,7 @@ module Loggr
       # - the factory method named #logger exists
       # - that it accepts two arguments, name and options hash
       # - the returned instnace responds to debug, info, warn, error and fatal
+      # - responds to tagged and mapped
       #
       def test_adapter_logger
         assert adapter.respond_to?(:logger), "The adapter should respond to #logger"
@@ -27,7 +28,7 @@ module Loggr
         logger = adapter.logger('lint', :to => @tempfile.path)
         %w{debug info warn error fatal}.each do |level|
           assert logger.respond_to?(level), "The logger should respond to ##{level}"
-          assert logger.respond_to?("#{level}?"), "The logger should respond to ##{level}?"
+          #assert logger.respond_to?("#{level}?"), "The logger should respond to ##{level}?"
         end
 
         assert logger.respond_to?(:tagged), "The logger should respond to #tagged"
