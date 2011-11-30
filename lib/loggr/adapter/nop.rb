@@ -1,4 +1,5 @@
 require 'loggr/adapter/abstract'
+require 'loggr/support/annotations'
 
 module Loggr
   module Adapter
@@ -6,14 +7,17 @@ module Loggr
     # Silences all logging operations, nothing is written at all.
     #
     class NOPAdapter < AbstractAdapter
-      
+
       class NOPLogger
         # Has no impact anyway :)
         attr_accessor :level
-        
+
         # Just to ensure compatiability with AS::BufferedLogger
         attr_reader :auto_flushing, :flush, :close
-        
+
+        # Support fuer Annotations wie `tagged` und `mapped`.
+        include Loggr::Support::Annotations::NOPSupport
+
         # Yields empty implementations for all severities
         %w{trace debug info warn error fatal}.each do |severity|
           class_eval <<-EOT, __FILE__, __LINE__ + 1
@@ -26,13 +30,13 @@ module Loggr
           EOT
         end
       end
-      
+
       # Get single NOPLogger instance
       def logger(name, options = {})
         @logger ||= NOPLogger.new
-      end      
+      end
     end
-    
+
     # THE instance
     NOP = NOPAdapter.new
   end
