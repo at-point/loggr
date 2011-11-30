@@ -2,7 +2,7 @@ require 'tempfile'
 
 module Loggr
   module Lint
-    
+
     # == Adapter and Logger Lint Tests
     #
     # You can test whether an object provides a compliant adapter and logger
@@ -12,7 +12,7 @@ module Loggr
     # Ensure you set the instance variable <tt>@adapter</tt> to the adapter to lint.
     #
     module Tests
-      
+
       # Verifies `adapter#logger`, it checks that:
       #
       # - the factory method named #logger exists
@@ -29,10 +29,13 @@ module Loggr
           assert logger.respond_to?(level), "The logger should respond to ##{level}"
           assert logger.respond_to?("#{level}?"), "The logger should respond to ##{level}?"
         end
+
+        assert logger.respond_to?(:tagged), "The logger should respond to #tagged"
+        assert logger.respond_to?(:mapped), "The logger should respond to #mapped"
       ensure
         @tempfile.unlink if @tempfile
       end
-            
+
       # Verifies `adapter#mdc`, it checks that:
       #
       # - the factory method named #mdc exists
@@ -42,17 +45,17 @@ module Loggr
       def test_adapter_mdc
         assert adapter.respond_to?(:mdc), "The adapter should respond to #mdc"
         assert adapter.method('mdc').arity == 0, "The adapter should accept no parameters for #mdc"
-        
+
         mdc = adapter.mdc
         assert mdc.respond_to?(:[]=), "The mdc should respond to #[]="
         assert mdc.respond_to?(:[]),  "The mdc should respond to #[]"
         assert mdc.respond_to?(:delete),  "The mdc should respond to #delete"
         assert mdc.respond_to?(:clear),   "The mdc should respond to #clear"
-        assert mdc.respond_to?(:to_hash), "The mdc should respond to #to_hash"        
+        assert mdc.respond_to?(:to_hash), "The mdc should respond to #to_hash"
       end
-            
+
       protected
-      
+
         # Access the adapter, must be defined <tt>@adapter</tt> in the
         # `setup` method.
         def adapter
