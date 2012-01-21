@@ -1,11 +1,11 @@
 rvm:
   - 1.8.7
-  - 1.9.2
   - 1.9.3
   - jruby
-  - rbx
-  - rbx-2.0
-  - ree
+gemfile:
+  - gemfiles/activesupport-3.0.gemfile
+  - gemfiles/activesupport-3.1.gemfile
+  - gemfiles/activesupport-3.2.gemfile
 
 notifications:
   recipients:
