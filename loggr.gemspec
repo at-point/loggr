@@ -24,5 +24,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency "rake", ">= 0.8.7"
   s.add_development_dependency "minitest", ">= 2.3.0"
   s.add_development_dependency "activesupport", ">= 3.0.0"
-  s.add_development_dependency "appraisal", ">= 0.3.8"
+  s.add_development_dependency "appraisal", ">= 0.4"
 end
