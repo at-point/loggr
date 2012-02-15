@@ -146,10 +146,11 @@ class Loggr::SLF4J::LoggerTest < MiniTest::Unit::TestCase
     assert_equal Hash.new, @logger.java_mdc.to_hash
   end
 
-  def test_keep_newlines
+  def test_strip_leading_newlines
     skip_unless_jruby
-    message = "some\nnewline\nmessage"
-    assert_equal message, @logger.send(:build_message, message)
+    assert_equal "   some\nnewline\nmessage", @logger.send(:build_message, "   some\nnewline\nmessage")
+    assert_equal "Started GET \"/service/dossiers\" for 127.0.0.1 at Wed Feb 15 22:28:02 +0100 2012", @logger.send(:build_message, "\n\nStarted GET \"/service/dossiers\" for 127.0.0.1 at Wed Feb 15 22:28:02 +0100 2012")
+    assert_equal "NoMethodError (missing foobar):\n   backtrace1\n   backtrace2\n\n", @logger.send(:build_message, "\n\nNoMethodError (missing foobar):\n   backtrace1\n   backtrace2\n\n")
   end
 
   def test_java_logger

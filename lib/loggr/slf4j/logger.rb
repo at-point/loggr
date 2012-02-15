@@ -102,9 +102,11 @@ module Loggr
 
       # Construct the message, note that progname will be ignored, maybe set as
       # MDC?
+      #
+      # Removes leading newlines.
       def build_message(message = nil, progname = nil, &block)
         message = yield if message.nil? && block_given?
-        message.to_s
+        message.to_s.sub(/^\n+/, '')
       end
     end
   end
