@@ -100,12 +100,12 @@ module Loggr
 
       protected
 
-        # Construct the message, note that progname will be ignored, maybe set as
-        # MDC?
-        def build_message(message = nil, progname = nil, &block)
-          message = yield if message.nil? && block_given?
-          message.to_s.gsub(/$\s*^/, '')
-        end
+      # Construct the message, note that progname will be ignored, maybe set as
+      # MDC?
+      def build_message(message = nil, progname = nil, &block)
+        message = yield if message.nil? && block_given?
+        message.to_s
+      end
     end
   end
 end

@@ -146,6 +146,12 @@ class Loggr::SLF4J::LoggerTest < MiniTest::Unit::TestCase
     assert_equal Hash.new, @logger.java_mdc.to_hash
   end
 
+  def test_keep_newlines
+    skip_unless_jruby
+    message = "some\nnewline\nmessage"
+    assert_equal message, @logger.send(:build_message, message)
+  end
+
   def test_java_logger
     skip_unless_jruby
     refute_nil @logger.java_logger
