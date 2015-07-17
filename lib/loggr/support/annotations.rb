@@ -31,7 +31,7 @@ begin
 
   # Enable support for `mapped(:user => "demo")` which falls
   # back to make use of its `tagged` method.
-  class ::ActiveSupport::TaggedLogging
+  module ::ActiveSupport::TaggedLogging
 
     # Uses `tagged` to tag items with the hash of infos.
     def mapped(hash = {}, &block)
