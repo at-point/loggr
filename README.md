@@ -1,3 +1,7 @@
+## :warning: UNMAINTANED
+
+**This project is no longer actively maintained.**
+
 Loggr
 =====
 
